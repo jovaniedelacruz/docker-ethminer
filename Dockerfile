@@ -14,20 +14,21 @@ RUN git clone https://github.com/ethereum-mining/ethminer.git; \
     cd ethminer; \
     git checkout tags/v0.18.0 ; \
     git submodule update --init --recursive; \
-
+# Build ethminer
 RUN cd ethminer;\
     mkdir build;\
     cd build; \
     cmake .. -DETHASHCUDA=ON -DETHASHCL=OFF -DETHSTRATUM=ON; \
     cmake --build . ;\
     make install
-    
+#Expose Ethminer status API to random port
 EXPOSE 3000/tcp
 
-# Env setup
+# Env setup; Defaults provided; adjust as needed
 ENV GPU_TEMP_START=60
 ENV GPU_TEMP_STOP=90
 ENV ETHERMINER_API_PORT=3000
+EXPOSE ${ETHERMINER_API_PORT}/tcp
 ENV STRATUM=stratum
 ENV WALLET_ADDR=0x2ed422140EFF2e5cC722Aa47bA40572D12c225e0
 ENV WORKER=Docker-Ethminer-Github
