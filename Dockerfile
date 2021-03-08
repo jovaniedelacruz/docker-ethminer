@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.2-devel-ubuntu18.04
+FROM nvidia/cuda:10.2-devel-ubuntu16.04
 MAINTAINER Jovanie De La Cruz
 
 WORKDIR /
@@ -24,6 +24,8 @@ RUN cd ethminer;\
 #Expose Ethminer status API to random port
 
 # Env setup; Defaults provided; adjust as needed
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
 ENV GPU_TEMP_START=60
 ENV GPU_TEMP_STOP=90
 ENV ETHMINER_API_PORT=3000
@@ -39,6 +41,5 @@ ENV GPU_SINGLE_ALLOC_PERCENT=100
 ENV GPU_FORCE_64BIT_PTR=0
 ENV GPU_MAX_HEAP_SIZE=100
 ENV GPU_USE_SYNC_OBJECTS=1
-ENV ADDITIONAL-OPTIONS=
 
-CMD ["sh", "-c", "/usr/local/bin/ethminer -U --HWMON 2 --tstart ${GPU_TEMP_START} --tstop ${GPU_TEMP_STOP} --exit --api-port -${ETHMINER_API_PORT} -P $STRATUM://${WALLET_ADDR}.${WORKER}:${WORKER_PASS}@${MINING_POOL}:${MINING_POOL_PORT} ${ADDITIONAL-OPTIONS}"]
+CMD ["sh", "-c", "/usr/local/bin/ethminer -U --HWMON 2 --tstart ${GPU_TEMP_START} --tstop ${GPU_TEMP_STOP} --exit --api-port -${ETHMINER_API_PORT} -P ${STRATUM}://${WALLET_ADDR}.${WORKER}:${WORKER_PASS}@${MINING_POOL}:${MINING_POOL_PORT}"]
