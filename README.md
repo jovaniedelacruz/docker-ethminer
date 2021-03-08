@@ -3,7 +3,7 @@
 
 ### Docker container for Ethereum mining with CUDA.
 
-Simple and easy to run, if you have a Nvidia GPU and want to mine eth.
+Simple and easy to run, if you have a Nvidia GPU and want to mine ETH.
 
 **Note:** This image builds ethminer, which is an activily maintained Genoil fork <https://github.com/ethereum-mining/ethminer>
 
@@ -14,8 +14,10 @@ Simple and easy to run, if you have a Nvidia GPU and want to mine eth.
 ### How to run
 Simply create this docker image from the dockerfile. It will create a container that will need minor reconfiguring.
 1. Enable nvidia-runtime for that container
-2. Adjust mining pool and wallet details
-3. Publish ethminer-api port
+2. Adjust mining pool and wallet details env variables
+3. Set restart policy to your preference
+4. Publish ethminer-api port
+
 ```
 $ nvidia-docker run -it anthonytatowicz/eth-cuda-miner ARG1 ARG2 ...
 
