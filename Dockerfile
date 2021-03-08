@@ -26,7 +26,6 @@ RUN cd ethminer;\
 # Env setup; Defaults provided; adjust as needed
 ENV GPU_TEMP_START=60
 ENV GPU_TEMP_STOP=90
-ARG ETHMINER_API_PORT
 ENV ETHMINER_API_PORT=3000
 EXPOSE ${ETHMINER_API_PORT}/tcp
 ENV STRATUM=stratum1+ssl
