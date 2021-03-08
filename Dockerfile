@@ -1,48 +1,43 @@
-FROM nvidia/cuda:8.0-devel-ubuntu16.04
-
-MAINTAINER Anthony Tatowicz
+FROM nvidia/cuda:10.2-devel-ubuntu18.04
+MAINTAINER Jovanie De La Cruz
 
 WORKDIR /
-
 # Package and dependency setup
 RUN apt-get update \
-    && apt-get -y install software-properties-common \
-    && add-apt-repository -y ppa:ethereum/ethereum -y \
-    && apt-get update \
-    && apt-get install -y git \
+  && apt-get -y install git \
      cmake \
-     libcryptopp-dev \
-     libleveldb-dev \
-     libjsoncpp-dev \
-     libjsonrpccpp-dev \
-     libboost-all-dev \
-     libgmp-dev \
-     libreadline-dev \
-     libcurl4-gnutls-dev \
-     ocl-icd-libopencl1 \
-     opencl-headers \
-     mesa-common-dev \
-     libmicrohttpd-dev \
-     build-essential
-
+     perl \
+     libdbus-1-dev \
+     gcc 
 # Git repo set up
 RUN git clone https://github.com/ethereum-mining/ethminer.git; \
     cd ethminer; \
-    git checkout tags/v0.12.0 
+    git checkout tags/v0.18.0 ; \
+    git submodule update --init --recursive; \
 
-# Build
-RUN cd ethminer; \
-    mkdir build; \
+RUN cd ethminer;\
+    mkdir build;\
     cd build; \
     cmake .. -DETHASHCUDA=ON -DETHASHCL=OFF -DETHSTRATUM=ON; \
-    cmake --build .; \
-    make install;
+    cmake --build . ;\
+    make install
+    
+EXPOSE 3000/tcp
 
 # Env setup
+ENV GPU_TEMP_START=60
+ENV GPU_TEMP_STOP=90
+ENV ETHERMINER_API_PORT=3000
+ENV STRATUM=stratum
+ENV WALLET_ADDR=0x2ed422140EFF2e5cC722Aa47bA40572D12c225e0
+ENV WORKER=Docker-Ethminer-Github
+ENV WORKER_PASS=helloworld
+ENV MINING_POOL=us2.ethermine.org
+ENV MINING_POOL_PORT=5555
+ENV GPU_MAX_ALLOC_PERCENT=100
+ENV GPU_SINGLE_ALLOC_PERCENT=100
 ENV GPU_FORCE_64BIT_PTR=0
 ENV GPU_MAX_HEAP_SIZE=100
 ENV GPU_USE_SYNC_OBJECTS=1
-ENV GPU_MAX_ALLOC_PERCENT=100
-ENV GPU_SINGLE_ALLOC_PERCENT=100
 
-ENTRYPOINT ["/usr/local/bin/ethminer", "-U"]
+CMD ["sh", "-c", "/usr/local/bin/ethminer -U --HWMON 2 --tstart ${GPU_TEMP_START} --tstop ${GPU_TEMP_STOP} --exit --api-port ${ETHMINER_API_PORT} -P $STRATUM://${WALLET_ADDR}.${WORKER}:${WORKER_PASS}@${MINING_POOL}:${MINING_POOL_PORT}"]
