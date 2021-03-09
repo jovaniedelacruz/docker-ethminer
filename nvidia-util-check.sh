@@ -6,5 +6,5 @@ if [ $util -lt 80 ]; then
   cd /extra/mining/bin
   /usr/local/bin/docker-compose restart
 else
-  echo echo $(date '+%Y %b %d %H:%M') Continuing
+  echo $(date '+%Y %b %d %H:%M') Continuing
 fi
